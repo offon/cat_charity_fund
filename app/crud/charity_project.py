@@ -38,7 +38,7 @@ class CRUDCharityProject(CRUDBase):
             obj_in_data['user_id'] = user.id
         obj_in_data['create_date'] = datetime.now()
         db_obj = CharityProject(**obj_in_data)
-        donations_for_invest, db_obj = await invest_donation(db_obj, donations_for_invest, session)
+        donations_for_invest, db_obj = await invest_donation(db_obj, donations_for_invest)
         for donation in donations_for_invest:
             session.add(donation)
         session.add(db_obj)

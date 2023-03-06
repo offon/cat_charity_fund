@@ -23,6 +23,7 @@ router = APIRouter()
     '/',
     response_model=list[CharityProjectGet],
     response_model_exclude_none=True,
+    description='Получает список всех проектов.'
 )
 async def get_all_charity_project(
         session: AsyncSession = Depends(get_async_session),
@@ -36,10 +37,15 @@ async def get_all_charity_project(
     response_model=CharityProjectCreate,
     response_model_exclude_none=True,
     dependencies=[Depends(current_superuser)],
+    # description=''
 )
 async def create_charity_project(
         charity_project: CharityProjectBase,
         session: AsyncSession = Depends(get_async_session)):
+    """
+    Создает благотворительный проект.\n
+    Только для суперюзеров.
+    """
     await check_name_duplicate(charity_project.name, session)
     donations_for_invest = await donation_crud.get_for_invest(session)
     new_project = await charity_project_crud.create(charity_project, donations_for_invest, session)
@@ -55,6 +61,10 @@ async def remove_charity_project(
         charity_project_id: int,
         session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Удаляет проект. Нельзя удалить проект, в который уже были инвестированы средства, его можно только закрыть.\n
+    Только для суперюзеров.
+    """
     charity_project = await check_charity_project_exists(charity_project_id, session)
     await check_charity_project_already_invested(charity_project)
     await check_charity_project_already_closed(charity_project)
@@ -72,6 +82,10 @@ async def partially_update_meeting_room(
         obj_in: CharityProjectUpdate,
         session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Закрытый проект нельзя редактировать, также нельзя установить требуемую сумму меньше уже вложенной.\n
+    Только для суперюзеров.
+    """
     charity_project = await check_charity_project_exists(
         charity_project_id, session
     )

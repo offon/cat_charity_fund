@@ -26,7 +26,7 @@ class CRUDDonation(CRUDBase):
             obj_in_data['user_id'] = user.id
         obj_in_data['create_date'] = datetime.now()
         db_obj = self.model(**obj_in_data)
-        projects_for_invest, donation = invest_donation(db_obj, projects_for_invest, session)
+        projects_for_invest, donation = invest_donation(db_obj, projects_for_invest)
         for projects in projects_for_invest:
             session.add(projects)
         session.add(donation)

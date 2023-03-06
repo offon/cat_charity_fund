@@ -21,6 +21,10 @@ router = APIRouter()
 async def get_all_donation(
         session: AsyncSession = Depends(get_async_session)
 ):
+    """
+    Получает список всех пожертвований.\n
+    Только для суперюзеров.
+    """
     all_donation = await donation_crud.get_multi(session)
     return all_donation
 
@@ -34,6 +38,10 @@ async def create_donation(
         donation: DonationPost,
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_user)):
+    """
+    Сделать пожертвование.\n
+    Только для зарегистрированного пользователя.
+    """
     projects_for_invest = await charity_project_crud.get_for_invest(session)
     new_donation = await donation_crud.create(donation, projects_for_invest, session, user)
     return new_donation
@@ -48,5 +56,9 @@ async def get_all_donation(
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(current_user)
 ):
+    """
+    Получить список моих пожертвований.\n
+    Только для зарегистрированного пользователя.
+    """
     all_donation = await donation_crud.get_my_donations(user=user, session=session)
     return all_donation
