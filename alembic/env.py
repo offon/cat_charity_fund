@@ -8,8 +8,6 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
 from app.core.base import Base
-from app.models.charity_project import CharityProject
-from app.models.donation import Donation
 
 load_dotenv('.env')
 
@@ -21,7 +19,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
-print('>>>> ', target_metadata.tables)
+
 
 
 def run_migrations_offline():
