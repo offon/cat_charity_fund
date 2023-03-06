@@ -1,4 +1,3 @@
-# app/api/endpoints/user.py
 from fastapi import APIRouter, HTTPException
 
 from app.core.user import auth_backend, fastapi_users

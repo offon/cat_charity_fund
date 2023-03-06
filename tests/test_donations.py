@@ -175,6 +175,8 @@ def test_donation_user_UD_enpoints(test_client, donation):
 def test_create_donation_check_create_date(user_client):
     response_1 = user_client.post('/donation/', json={'full_amount': 10})
     response_2 = user_client.post('/donation/', json={'full_amount': 20})
+    data1 = response_1.json()['create_date']
+    data2 = response_2.json()['create_date']
     assert response_1.json()['create_date'] != response_2.json()['create_date'], (
         'При создании двух пожертвований с паузой (в 1 секунду, например) у них должны быть разные `create_date`'
     )
