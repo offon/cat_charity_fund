@@ -1,3 +1,5 @@
+from http.client import BAD_REQUEST, NOT_FOUND, UNPROCESSABLE_ENTITY
+
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -12,7 +14,7 @@ async def check_name_duplicate(
     charity_project = await charity_project_crud.get_project_id_by_name(name, session)
     if charity_project is not None:
         raise HTTPException(
-            status_code=400,
+            status_code=BAD_REQUEST,
             detail='Проект с таким именем уже существует!',
         )
 
@@ -24,7 +26,7 @@ async def check_charity_project_exists(
     charity_project = await charity_project_crud.get(charity_project_id, session)
     if charity_project is None:
         raise HTTPException(
-            status_code=404,
+            status_code=NOT_FOUND,
             detail='Проект не найдена!'
         )
     return charity_project
@@ -33,7 +35,7 @@ async def check_charity_project_exists(
 async def check_charity_project_fully(project: CharityProject):
     if project.fully_invested:
         raise HTTPException(
-            status_code=400,
+            status_code=BAD_REQUEST,
             detail='Закрытый проект нельзя редактировать!'
         )
     return project
@@ -42,7 +44,7 @@ async def check_charity_project_fully(project: CharityProject):
 async def check_charity_project_full_amount(project: CharityProject, full_amount: int):
     if project.invested_amount > full_amount:
         raise HTTPException(
-            status_code=422,
+            status_code=UNPROCESSABLE_ENTITY,
             detail='Нельзя установить full_amount меньше fully_invested'
         )
     return project
@@ -51,7 +53,7 @@ async def check_charity_project_full_amount(project: CharityProject, full_amount
 async def check_charity_project_already_invested(project: CharityProject):
     if project.invested_amount > 0:
         raise HTTPException(
-            status_code=400,
+            status_code=BAD_REQUEST,
             detail='В проект были внесены средства, не подлежит удалению!'
         )
     return project
@@ -60,7 +62,7 @@ async def check_charity_project_already_invested(project: CharityProject):
 async def check_charity_project_already_closed(project: CharityProject):
     if project.invested_amount == project.full_amount:
         raise HTTPException(
-            status_code=400,
+            status_code=BAD_REQUEST,
             detail='Удаление закрытых проектов запрещено.'
         )
     return project
