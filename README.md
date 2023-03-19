@@ -94,7 +94,6 @@ python3 -m venv venv
 
 Выполните команды для создания базы данных и проведение необходимых миграций
 ```
-alembic init --template async alembic
 alembic revision --autogenerate -m "First migration"
 alembic upgrade head
 ```
