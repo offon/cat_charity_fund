@@ -65,5 +65,15 @@ class CRUDCharityProject(CRUDBase):
         await session.refresh(db_obj)
         return db_obj
 
+    async def get_projects_by_completion_rate(
+            self,
+            session: AsyncSession,
+    ) -> list[CharityProject]:
+        charity_projects = await session.execute(
+            select(CharityProject).where(CharityProject.fully_invested == 1)
+        )
+        charity_projects = charity_projects.scalars().all()
+        return charity_projects
+
 
 charity_project_crud = CRUDCharityProject(CharityProject)
